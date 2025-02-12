@@ -1,1 +1,3 @@
-export * as ErrorDetectSDK from './lib'
+export {
+    ErrorDetector
+} from './lib/error-detector/index'

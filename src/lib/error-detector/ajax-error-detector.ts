@@ -19,10 +19,10 @@ interface errorCache {
 export class ajaxErrorDetector {
     //singleton
     private static instance:ajaxErrorDetector | null = null
-    private errorCache:errorCache =  {
+    private static errorCache:errorCache =  {
 
     }
-    private listenerCache:listenerCache = {
+    private static listenerCache:listenerCache = {
 
     }
     constructor() {
@@ -78,7 +78,7 @@ export class ajaxErrorDetector {
     }
     private _startListener() {
         eventList.forEach(eventName => {
-            if(this.listenerCache[eventName]) return; 
+            if(ajaxErrorDetector.listenerCache[eventName]) return; 
             const listener = (event:Event):void => {
                 if(!(event instanceof CustomEvent)) return;
                 const {detail:{
@@ -89,8 +89,8 @@ export class ajaxErrorDetector {
                     _type = '',
                     _id = ''
                 } = {}} = event;
-                if(this.errorCache[_id]) return;
-                this.errorCache[_id] = {
+                if(ajaxErrorDetector.errorCache[_id]) return;
+                ajaxErrorDetector.errorCache[_id] = {
                     _method,
                     _url,
                     _data,
@@ -100,7 +100,13 @@ export class ajaxErrorDetector {
                 }
             }
             window.addEventListener('ajax' + eventName, listener)
-            this.listenerCache[eventName] = listener
+            ajaxErrorDetector.listenerCache[eventName] = listener
+        })
+    }
+    private _removeListener() {
+        eventList.forEach(eventName => {
+            if(!ajaxErrorDetector.listenerCache[eventName]) return;
+            window.removeEventListener('ajax' + eventName, ajaxErrorDetector.listenerCache[eventName] as EventListener)
         })
     }
 }

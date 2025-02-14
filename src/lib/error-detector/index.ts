@@ -1,12 +1,16 @@
 import {
     ajaxErrorDetector
-} from './ajaxErrorDetector'
+} from './ajax-error-detector'
+import {
+    unhandledrejectionErrorDetector
+} from './unhandledrejection-error-detector'
 export class ErrorDetector {
     private errorCache = []
     constructor(){
 
     }
     init() {
-        new ajaxErrorDetector()
+        new ajaxErrorDetector();
+        new unhandledrejectionErrorDetector()
     }
 }
